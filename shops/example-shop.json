@@ -1,0 +1,10 @@
+{
+  "shop_id": "example-shop",
+  "name": "Example Cuts",
+  "hours": "Tue-Sat, 9-6",
+  "services": ["Trim", "Color", "Beard trim"],
+  "booking_link": "https://forms.gle/REPLACE-WITH-YOUR-FORM",
+  "google_sheet_id": "REPLACE-WITH-YOUR-SHEET-ID",
+  "sheet_tab": "Bookings",
+  "after_hours_note": "A person picks this thread up after 9am."
+}
