@@ -67,6 +67,39 @@ posted to.
 pytest
 ```
 
+## Deploying to Render
+
+`render.yaml` defines this as a Render Blueprint, so it deploys in one step:
+Render dashboard → **New → Blueprint** → point it at this GitHub repo. Render
+reads `render.yaml` and provisions the web service automatically.
+
+Env vars marked `sync: false` in `render.yaml` aren't stored in the repo —
+Render prompts you to fill them in when the blueprint is applied (or later
+under the service's **Environment** tab):
+
+- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` — from the Twilio console.
+
+The Google service account key can't go in an env var or the repo safely, so
+add it as a **Secret File** instead: service → **Environment** → **Secret
+Files** → new file named `service-account.json` with the key's JSON as its
+contents. Render mounts secret files at `/etc/secrets/<name>`, which is
+exactly what `GOOGLE_SERVICE_ACCOUNT_FILE` in `render.yaml` already points
+at — no extra config needed once it's uploaded.
+
+`PUBLIC_BASE_URL` in `render.yaml` assumes the service is named
+`frontdesk-mvp` (Render's default subdomain is
+`https://<service-name>.onrender.com`). If you rename the service, update
+that value to match — it's used for Twilio signature validation, so a
+mismatch makes every webhook request look invalid (403s).
+
+Once it's live, point the Twilio WhatsApp Sandbox's webhook at:
+`https://frontdesk-mvp.onrender.com/webhook/whatsapp/<shop_id>`
+
+**Free plan note**: it spins down after ~15 minutes idle and takes 30-50s to
+wake on the next request. Fine between test messages, but hit `/health` a
+minute or two before a live client demo to warm it up — or use the paid
+Starter plan (~$7/mo) to remove cold-start risk entirely during the call.
+
 ## Known MVP limitations
 
 - Every inbound message is logged as a raw row (sender, message text,
