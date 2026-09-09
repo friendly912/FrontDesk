@@ -60,16 +60,26 @@ cp .env.example .env
 
 When the `csv` backend is active, `GET /debug/bookings/{shop_id}` reads the
 file back over HTTP — handy when the server isn't on a machine you can
-`cat` the file on directly (e.g. a Render deploy). It returns 404 if the
+`cat` the file on directly (e.g. a Render deploy), and it's a plain URL
+someone can open in a browser (on a phone or laptop) after sending a test
+WhatsApp message, then refresh to see the new row. It returns 404 if the
 shop is unknown or hasn't logged anything yet, and 404 if `BOOKINGS_BACKEND`
 isn't `csv` (there's no file to read for `google_sheets`). If `DEBUG_TOKEN`
-is set in `.env`, requests must include a matching `X-Debug-Token` header or
-get a 403 — the endpoint returns raw customer phone numbers and messages,
-so always set this before deploying anywhere public:
+is set in `.env`, requests need the matching value either as a
+`X-Debug-Token` header or a `?token=` query param, or they get a 403 — the
+endpoint returns raw customer phone numbers and messages, so always set
+this before deploying anywhere public:
 
 ```bash
 curl -H "X-Debug-Token: $DEBUG_TOKEN" \
   https://frontdesk-mvp.onrender.com/debug/bookings/example-shop
+```
+
+Or as a link anyone can just open (e.g. share with the person testing on
+their own phone):
+
+```
+https://frontdesk-mvp.onrender.com/debug/bookings/example-shop?token=<DEBUG_TOKEN>
 ```
 
 ### Shop config

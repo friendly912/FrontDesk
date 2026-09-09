@@ -54,10 +54,16 @@ async def whatsapp_webhook(shop_id: str, request: Request):
 
 
 @app.get("/debug/bookings/{shop_id}")
-def debug_bookings(shop_id: str, x_debug_token: str | None = Header(default=None)):
+def debug_bookings(
+    shop_id: str,
+    token: str | None = None,
+    x_debug_token: str | None = Header(default=None),
+):
     settings = get_settings()
-    if settings.debug_token and x_debug_token != settings.debug_token:
-        raise HTTPException(status_code=403, detail="Invalid or missing X-Debug-Token")
+    if settings.debug_token and settings.debug_token not in (token, x_debug_token):
+        raise HTTPException(
+            status_code=403, detail="Invalid or missing token (?token= or X-Debug-Token)"
+        )
 
     try:
         shop = load_shop(shop_id)

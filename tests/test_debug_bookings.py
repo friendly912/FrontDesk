@@ -86,8 +86,15 @@ def test_debug_bookings_requires_token_when_configured(monkeypatch):
     unauthorized = client.get("/debug/bookings/acme-cuts")
     assert unauthorized.status_code == 403
 
-    authorized = client.get(
+    authorized_header = client.get(
         "/debug/bookings/acme-cuts", headers={"X-Debug-Token": "s3cret"}
     )
-    assert authorized.status_code == 200
-    assert "hi there" in authorized.text
+    assert authorized_header.status_code == 200
+    assert "hi there" in authorized_header.text
+
+    authorized_query = client.get("/debug/bookings/acme-cuts?token=s3cret")
+    assert authorized_query.status_code == 200
+    assert "hi there" in authorized_query.text
+
+    wrong_query = client.get("/debug/bookings/acme-cuts?token=nope")
+    assert wrong_query.status_code == 403
