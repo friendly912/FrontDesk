@@ -1,7 +1,8 @@
 import logging
+from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import Response
+from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi.responses import PlainTextResponse, Response
 from twilio.twiml.messaging_response import MessagingResponse
 
 from .bookings import append_booking_row
@@ -50,3 +51,27 @@ async def whatsapp_webhook(shop_id: str, request: Request):
     twiml = MessagingResponse()
     twiml.message(build_auto_reply(shop))
     return Response(content=str(twiml), media_type="application/xml")
+
+
+@app.get("/debug/bookings/{shop_id}")
+def debug_bookings(shop_id: str, x_debug_token: str | None = Header(default=None)):
+    settings = get_settings()
+    if settings.debug_token and x_debug_token != settings.debug_token:
+        raise HTTPException(status_code=403, detail="Invalid or missing X-Debug-Token")
+
+    try:
+        shop = load_shop(shop_id)
+    except ShopNotFoundError:
+        raise HTTPException(status_code=404, detail=f"Unknown shop '{shop_id}'")
+
+    if settings.bookings_backend != "csv":
+        raise HTTPException(
+            status_code=404,
+            detail="No local CSV file — BOOKINGS_BACKEND is not 'csv'",
+        )
+
+    path = Path(settings.local_data_dir) / shop.shop_id / "bookings.csv"
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="No bookings logged yet for this shop")
+
+    return PlainTextResponse(path.read_text())

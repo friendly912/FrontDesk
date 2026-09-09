@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     # Set when the app sits behind a proxy/tunnel (ngrok, load balancer) so the
     # signature check validates against the URL Twilio actually posted to.
     public_base_url: str = ""
+    # If set, /debug/bookings/{shop_id} requires this value in an
+    # X-Debug-Token header. Leave unset only for local dev — the endpoint
+    # returns raw customer phone numbers and messages.
+    debug_token: str = ""
 
 
 @lru_cache

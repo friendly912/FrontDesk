@@ -58,6 +58,20 @@ cp .env.example .env
   `google_sheets` in `.env` (or in Render's Environment tab) once you have
   the service account.
 
+When the `csv` backend is active, `GET /debug/bookings/{shop_id}` reads the
+file back over HTTP — handy when the server isn't on a machine you can
+`cat` the file on directly (e.g. a Render deploy). It returns 404 if the
+shop is unknown or hasn't logged anything yet, and 404 if `BOOKINGS_BACKEND`
+isn't `csv` (there's no file to read for `google_sheets`). If `DEBUG_TOKEN`
+is set in `.env`, requests must include a matching `X-Debug-Token` header or
+get a 403 — the endpoint returns raw customer phone numbers and messages,
+so always set this before deploying anywhere public:
+
+```bash
+curl -H "X-Debug-Token: $DEBUG_TOKEN" \
+  https://frontdesk-mvp.onrender.com/debug/bookings/example-shop
+```
+
 ### Shop config
 
 Copy `shops/example-shop.json` to `shops/<shop_id>.json` and fill in hours,
@@ -91,6 +105,8 @@ Render prompts you to fill them in when the blueprint is applied (or later
 under the service's **Environment** tab):
 
 - `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` — from the Twilio console.
+- `DEBUG_TOKEN` — any random string; required to use the `/debug/bookings`
+  endpoint below once the service is public.
 
 `render.yaml` defaults `BOOKINGS_BACKEND` to `csv`, so the deploy works with
 just the two Twilio values above — no Google Cloud needed. Note that
@@ -113,6 +129,9 @@ mismatch makes every webhook request look invalid (403s).
 
 Once it's live, point the Twilio WhatsApp Sandbox's webhook at:
 `https://frontdesk-mvp.onrender.com/webhook/whatsapp/<shop_id>`
+
+Watch bookings land during a demo with `GET /debug/bookings/<shop_id>` (see
+above) — no shell access to the instance needed.
 
 **Free plan note**: it spins down after ~15 minutes idle and takes 30-50s to
 wake on the next request. Fine between test messages, but hit `/health` a

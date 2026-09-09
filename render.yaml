@@ -23,3 +23,5 @@ services:
         value: "true"
       - key: PUBLIC_BASE_URL
         value: https://frontdesk-mvp.onrender.com
+      - key: DEBUG_TOKEN
+        sync: false
