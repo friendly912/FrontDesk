@@ -2,11 +2,12 @@ import logging
 from pathlib import Path
 
 from fastapi import FastAPI, Header, HTTPException, Request
-from fastapi.responses import PlainTextResponse, Response
+from fastapi.responses import HTMLResponse, PlainTextResponse, Response
 from twilio.twiml.messaging_response import MessagingResponse
 
 from .bookings import append_booking_row
 from .config import get_settings
+from .debug_view import render_bookings_table
 from .replies import build_auto_reply
 from .shops import ShopNotFoundError, load_shop
 from .whatsapp import is_valid_twilio_request
@@ -57,6 +58,7 @@ async def whatsapp_webhook(shop_id: str, request: Request):
 def debug_bookings(
     shop_id: str,
     token: str | None = None,
+    format: str | None = None,
     x_debug_token: str | None = Header(default=None),
 ):
     settings = get_settings()
@@ -80,4 +82,7 @@ def debug_bookings(
     if not path.exists():
         raise HTTPException(status_code=404, detail="No bookings logged yet for this shop")
 
-    return PlainTextResponse(path.read_text())
+    csv_text = path.read_text()
+    if format == "csv":
+        return PlainTextResponse(csv_text)
+    return HTMLResponse(render_bookings_table(shop.name, csv_text))

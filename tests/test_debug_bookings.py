@@ -44,7 +44,7 @@ def test_debug_bookings_404_when_no_rows_yet():
     assert response.status_code == 404
 
 
-def test_debug_bookings_returns_csv_contents():
+def test_debug_bookings_returns_html_table_by_default():
     import app.main as main_module
     from app.csv_store import append_booking_row
     from app.shops import load_shop
@@ -55,8 +55,45 @@ def test_debug_bookings_returns_csv_contents():
     response = client.get("/debug/bookings/acme-cuts")
 
     assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert "<table>" in response.text
+    assert "Acme Cuts" in response.text
     assert "whatsapp:+15551234567" in response.text
     assert "hi there" in response.text
+
+
+def test_debug_bookings_escapes_message_content():
+    import app.main as main_module
+    from app.csv_store import append_booking_row
+    from app.shops import load_shop
+
+    append_booking_row(
+        load_shop("acme-cuts"),
+        "whatsapp:+15551234567",
+        "<script>alert(1)</script>",
+    )
+
+    client = TestClient(main_module.app)
+    response = client.get("/debug/bookings/acme-cuts")
+
+    assert "<script>alert(1)</script>" not in response.text
+    assert "&lt;script&gt;alert(1)&lt;/script&gt;" in response.text
+
+
+def test_debug_bookings_format_csv_returns_raw_csv():
+    import app.main as main_module
+    from app.csv_store import append_booking_row
+    from app.shops import load_shop
+
+    append_booking_row(load_shop("acme-cuts"), "whatsapp:+15551234567", "hi there")
+
+    client = TestClient(main_module.app)
+    response = client.get("/debug/bookings/acme-cuts?format=csv")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/plain")
+    assert response.text.splitlines()[0] == "timestamp,from,message,status"
+    assert "<table>" not in response.text
 
 
 def test_debug_bookings_unknown_shop_returns_404():
