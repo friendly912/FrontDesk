@@ -1,9 +1,9 @@
 # Frontdesk
 
-WhatsApp auto-reply + Google Sheets booking ledger for local shops, matching
-the flow in `frontdesk-pitch.html`: a customer texts, gets an instant reply
-with hours/services/booking link, and the message lands as a row in the
-shop's Google Sheet.
+WhatsApp auto-reply + booking ledger for local shops, matching the flow in
+`frontdesk-pitch.html`: a customer texts, gets an instant reply with
+hours/services/booking link, and the message lands as a row in the shop's
+ledger.
 
 ## How it works
 
@@ -13,7 +13,8 @@ inbound message it:
 1. Validates the Twilio request signature.
 2. Loads that shop's config from `shops/{shop_id}.json`.
 3. Appends a row (timestamp, sender, message, status `New`) to the shop's
-   Google Sheet.
+   ledger — a local CSV file by default, or a Google Sheet once you switch
+   `BOOKINGS_BACKEND` (see below).
 4. Replies with the shop's hours, services, and booking link via TwiML.
 
 Each shop gets its own webhook URL and its own config file, so one server
@@ -35,15 +36,27 @@ cp .env.example .env
 3. Point the sandbox's "when a message comes in" webhook at
    `https://<your-public-url>/webhook/whatsapp/<shop_id>`.
 
-### Google Sheets
+### Booking ledger
 
-1. Create a Google Cloud service account, enable the Sheets API, and
-   download its JSON key to `secrets/service-account.json`.
-2. Share the target Google Sheet with the service account's email
-   (Editor access).
-3. Put the sheet ID (from its URL) in the shop's config as
-   `google_sheet_id`. The sheet needs a tab matching `sheet_tab`
-   (default `Bookings`) with 4 columns: date, from, message, status.
+`BOOKINGS_BACKEND` in `.env` picks where bookings get logged:
+
+- **`csv` (default, no external account needed)** — bookings are appended to
+  `LOCAL_DATA_DIR/<shop_id>/bookings.csv` (created automatically). This is
+  enough to demo the full flow — including watching new rows land in real
+  time — without setting up anything in Google Cloud. Useful if your Google
+  account can't do the 2FA Cloud Console requires yet.
+- **`google_sheets`** — requires a Google Cloud service account:
+  1. Create the service account, enable the Sheets API, and download its
+     JSON key to `secrets/service-account.json`.
+  2. Share the target Google Sheet with the service account's email
+     (Editor access).
+  3. Put the sheet ID (from its URL) in the shop's config as
+     `google_sheet_id`. The sheet needs a tab matching `sheet_tab`
+     (default `Bookings`) with 4 columns: date, from, message, status.
+
+  Switching later doesn't touch any code — just flip `BOOKINGS_BACKEND` to
+  `google_sheets` in `.env` (or in Render's Environment tab) once you have
+  the service account.
 
 ### Shop config
 
@@ -79,12 +92,18 @@ under the service's **Environment** tab):
 
 - `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` — from the Twilio console.
 
-The Google service account key can't go in an env var or the repo safely, so
-add it as a **Secret File** instead: service → **Environment** → **Secret
-Files** → new file named `service-account.json` with the key's JSON as its
-contents. Render mounts secret files at `/etc/secrets/<name>`, which is
-exactly what `GOOGLE_SERVICE_ACCOUNT_FILE` in `render.yaml` already points
-at — no extra config needed once it's uploaded.
+`render.yaml` defaults `BOOKINGS_BACKEND` to `csv`, so the deploy works with
+just the two Twilio values above — no Google Cloud needed. Note that
+Render's free/starter web services have ephemeral disk: it survives while
+the instance is running but resets on redeploy, which is fine for a demo
+session but not for durable storage.
+
+When you're ready to switch to Google Sheets: change `BOOKINGS_BACKEND` to
+`google_sheets` in the Environment tab, then add the service account key as
+a **Secret File** (service → **Environment** → **Secret Files** → new file
+named `service-account.json` with the key's JSON as its contents). Render
+mounts secret files at `/etc/secrets/<name>`, which is exactly what
+`GOOGLE_SERVICE_ACCOUNT_FILE` in `render.yaml` already points at.
 
 `PUBLIC_BASE_URL` in `render.yaml` assumes the service is named
 `frontdesk-mvp` (Render's default subdomain is
@@ -112,3 +131,6 @@ Starter plan (~$7/mo) to remove cold-start risk entirely during the call.
   Twilio number — the shared sandbox works for development only.
 - Shop config is read from local JSON files and cached in memory; changing
   a config file requires restarting the server.
+- The `csv` booking backend is local disk, not shared or durable across
+  redeploys — fine for a pilot/demo, but `google_sheets` (or a real
+  database) is the intended path once this needs to persist for real.

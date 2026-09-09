@@ -11,6 +11,10 @@ class Settings(BaseSettings):
     google_service_account_file: str = "./secrets/service-account.json"
     shops_dir: str = "./shops"
     validate_twilio_signature: bool = True
+    # "csv" (default) needs no external account and writes to local_data_dir;
+    # "google_sheets" requires a Google Cloud service account.
+    bookings_backend: str = "csv"
+    local_data_dir: str = "./data"
     # Set when the app sits behind a proxy/tunnel (ngrok, load balancer) so the
     # signature check validates against the URL Twilio actually posted to.
     public_base_url: str = ""

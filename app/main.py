@@ -4,9 +4,9 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import Response
 from twilio.twiml.messaging_response import MessagingResponse
 
+from .bookings import append_booking_row
 from .config import get_settings
 from .replies import build_auto_reply
-from .sheets import append_booking_row
 from .shops import ShopNotFoundError, load_shop
 from .whatsapp import is_valid_twilio_request
 
