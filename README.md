@@ -1,7 +1,7 @@
 # Frontdesk
 
 LINE auto-reply + booking ledger for local shops, matching the flow in
-`frontdesk-pitch.html`: a customer messages the shop's LINE account, gets an
+`index.html`: a customer messages the shop's LINE account, gets an
 instant reply with hours/services/booking link, and the message lands as a
 row in the shop's ledger.
 
