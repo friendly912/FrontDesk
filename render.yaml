@@ -7,9 +7,9 @@ services:
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
-      - key: TWILIO_ACCOUNT_SID
+      - key: LINE_CHANNEL_SECRET
         sync: false
-      - key: TWILIO_AUTH_TOKEN
+      - key: LINE_CHANNEL_ACCESS_TOKEN
         sync: false
       - key: BOOKINGS_BACKEND
         value: csv
@@ -19,9 +19,7 @@ services:
         value: /etc/secrets/service-account.json
       - key: SHOPS_DIR
         value: ./shops
-      - key: VALIDATE_TWILIO_SIGNATURE
+      - key: VALIDATE_LINE_SIGNATURE
         value: "true"
-      - key: PUBLIC_BASE_URL
-        value: https://frontdesk-mvp.onrender.com
       - key: DEBUG_TOKEN
         sync: false

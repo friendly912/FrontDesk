@@ -22,7 +22,7 @@ def _env(tmp_path, monkeypatch):
 
     monkeypatch.setenv("SHOPS_DIR", str(shops_dir))
     monkeypatch.setenv("LOCAL_DATA_DIR", str(tmp_path / "data"))
-    monkeypatch.setenv("VALIDATE_TWILIO_SIGNATURE", "false")
+    monkeypatch.setenv("VALIDATE_LINE_SIGNATURE", "false")
     monkeypatch.delenv("DEBUG_TOKEN", raising=False)
 
     from app.config import get_settings
@@ -49,7 +49,7 @@ def test_debug_bookings_returns_html_table_by_default():
     from app.csv_store import append_booking_row
     from app.shops import load_shop
 
-    append_booking_row(load_shop("acme-cuts"), "whatsapp:+15551234567", "hi there")
+    append_booking_row(load_shop("acme-cuts"), "U15551234567", "hi there")
 
     client = TestClient(main_module.app)
     response = client.get("/debug/bookings/acme-cuts")
@@ -58,7 +58,7 @@ def test_debug_bookings_returns_html_table_by_default():
     assert response.headers["content-type"].startswith("text/html")
     assert "<table>" in response.text
     assert "Acme Cuts" in response.text
-    assert "whatsapp:+15551234567" in response.text
+    assert "U15551234567" in response.text
     assert "hi there" in response.text
 
 
@@ -69,7 +69,7 @@ def test_debug_bookings_escapes_message_content():
 
     append_booking_row(
         load_shop("acme-cuts"),
-        "whatsapp:+15551234567",
+        "U15551234567",
         "<script>alert(1)</script>",
     )
 
@@ -85,14 +85,14 @@ def test_debug_bookings_format_csv_returns_raw_csv():
     from app.csv_store import append_booking_row
     from app.shops import load_shop
 
-    append_booking_row(load_shop("acme-cuts"), "whatsapp:+15551234567", "hi there")
+    append_booking_row(load_shop("acme-cuts"), "U15551234567", "hi there")
 
     client = TestClient(main_module.app)
     response = client.get("/debug/bookings/acme-cuts?format=csv")
 
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/plain")
-    assert response.text.splitlines()[0] == "timestamp,from,message,status"
+    assert response.text.splitlines()[0] == "timestamp,from_id,message,status"
     assert "<table>" not in response.text
 
 
@@ -116,7 +116,7 @@ def test_debug_bookings_requires_token_when_configured(monkeypatch):
     from app.csv_store import append_booking_row
     from app.shops import load_shop
 
-    append_booking_row(load_shop("acme-cuts"), "whatsapp:+15551234567", "hi there")
+    append_booking_row(load_shop("acme-cuts"), "U15551234567", "hi there")
 
     client = TestClient(main_module.app)
 

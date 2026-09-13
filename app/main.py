@@ -2,15 +2,14 @@ import logging
 from pathlib import Path
 
 from fastapi import FastAPI, Header, HTTPException, Request
-from fastapi.responses import HTMLResponse, PlainTextResponse, Response
-from twilio.twiml.messaging_response import MessagingResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
 
 from .bookings import append_booking_row
 from .config import get_settings
 from .debug_view import render_bookings_table
+from .line_client import is_valid_line_signature, reply_text
 from .replies import build_auto_reply
 from .shops import ShopNotFoundError, load_shop
-from .whatsapp import is_valid_twilio_request
 
 logger = logging.getLogger("frontdesk")
 app = FastAPI(title="Frontdesk")
@@ -21,37 +20,41 @@ def health():
     return {"status": "ok"}
 
 
-@app.post("/webhook/whatsapp/{shop_id}")
-async def whatsapp_webhook(shop_id: str, request: Request):
-    form = await request.form()
-    params = dict(form)
-    signature = request.headers.get("X-Twilio-Signature", "")
-
-    settings = get_settings()
-    url = (
-        settings.public_base_url.rstrip("/") + request.url.path
-        if settings.public_base_url
-        else str(request.url)
-    )
-    if not is_valid_twilio_request(url, params, signature):
-        raise HTTPException(status_code=403, detail="Invalid Twilio signature")
+@app.post("/webhook/line/{shop_id}")
+async def line_webhook(
+    shop_id: str, request: Request, x_line_signature: str | None = Header(default=None)
+):
+    body = await request.body()
+    if not is_valid_line_signature(body, x_line_signature or ""):
+        raise HTTPException(status_code=403, detail="Invalid LINE signature")
 
     try:
         shop = load_shop(shop_id)
     except ShopNotFoundError:
         raise HTTPException(status_code=404, detail=f"Unknown shop '{shop_id}'")
 
-    from_number = params.get("From", "")
-    message_body = params.get("Body", "").strip()
+    payload = await request.json()
+    for event in payload.get("events", []):
+        message = event.get("message", {})
+        if event.get("type") != "message" or message.get("type") != "text":
+            continue
 
-    try:
-        append_booking_row(shop, from_number, message_body)
-    except Exception:
-        logger.exception("Failed to log booking row for shop %s", shop_id)
+        from_id = event.get("source", {}).get("userId", "")
+        message_body = message.get("text", "").strip()
+        reply_token = event.get("replyToken")
 
-    twiml = MessagingResponse()
-    twiml.message(build_auto_reply(shop))
-    return Response(content=str(twiml), media_type="application/xml")
+        try:
+            append_booking_row(shop, from_id, message_body)
+        except Exception:
+            logger.exception("Failed to log booking row for shop %s", shop_id)
+
+        if reply_token:
+            try:
+                reply_text(reply_token, build_auto_reply(shop))
+            except Exception:
+                logger.exception("Failed to send LINE reply for shop %s", shop_id)
+
+    return {"status": "ok"}
 
 
 @app.get("/debug/bookings/{shop_id}")

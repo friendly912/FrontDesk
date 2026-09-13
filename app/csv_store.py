@@ -5,7 +5,7 @@ from pathlib import Path
 from .config import get_settings
 from .shops import ShopConfig
 
-HEADER = ["timestamp", "from", "message", "status"]
+HEADER = ["timestamp", "from_id", "message", "status"]
 
 
 def _csv_path(shop: ShopConfig) -> Path:
@@ -16,7 +16,7 @@ def _csv_path(shop: ShopConfig) -> Path:
 
 def append_booking_row(
     shop: ShopConfig,
-    from_number: str,
+    from_id: str,
     message_body: str,
     received_at: datetime | None = None,
 ) -> None:
@@ -28,5 +28,5 @@ def append_booking_row(
         if is_new_file:
             writer.writerow(HEADER)
         writer.writerow(
-            [received_at.strftime("%Y-%m-%d %H:%M"), from_number, message_body, "New"]
+            [received_at.strftime("%Y-%m-%d %H:%M"), from_id, message_body, "New"]
         )

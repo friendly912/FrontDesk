@@ -1,21 +1,23 @@
 # Frontdesk
 
-WhatsApp auto-reply + booking ledger for local shops, matching the flow in
-`frontdesk-pitch.html`: a customer texts, gets an instant reply with
-hours/services/booking link, and the message lands as a row in the shop's
-ledger.
+LINE auto-reply + booking ledger for local shops, matching the flow in
+`frontdesk-pitch.html`: a customer messages the shop's LINE account, gets an
+instant reply with hours/services/booking link, and the message lands as a
+row in the shop's ledger.
 
 ## How it works
 
-`POST /webhook/whatsapp/{shop_id}` is the Twilio WhatsApp webhook. On each
-inbound message it:
+`POST /webhook/line/{shop_id}` is the LINE Messaging API webhook. On each
+inbound message event it:
 
-1. Validates the Twilio request signature.
+1. Validates the `X-Line-Signature` header (HMAC-SHA256 over the raw body
+   using the channel secret).
 2. Loads that shop's config from `shops/{shop_id}.json`.
-3. Appends a row (timestamp, sender, message, status `New`) to the shop's
-   ledger — a local CSV file by default, or a Google Sheet once you switch
-   `BOOKINGS_BACKEND` (see below).
-4. Replies with the shop's hours, services, and booking link via TwiML.
+3. Appends a row (timestamp, sender's LINE user ID, message, status `New`)
+   to the shop's ledger — a local CSV file by default, or a Google Sheet
+   once you switch `BOOKINGS_BACKEND` (see below).
+4. Replies with the shop's hours, services, and booking link via the LINE
+   Reply API, using the event's `replyToken`.
 
 Each shop gets its own webhook URL and its own config file, so one server
 can serve several shops.
@@ -28,13 +30,25 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-### Twilio
+### LINE
 
-1. Create a Twilio account and set up the WhatsApp sandbox (or a production
-   WhatsApp sender once approved).
-2. Put `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` in `.env`.
-3. Point the sandbox's "when a message comes in" webhook at
-   `https://<your-public-url>/webhook/whatsapp/<shop_id>`.
+1. Create a LINE Official Account and enable the **Messaging API** for it —
+   easiest via the [LINE Developers Console](https://developers.line.biz/console/):
+   create a provider, then a Messaging API channel under it.
+2. On the channel's **Messaging API** tab, copy the **Channel secret** into
+   `LINE_CHANNEL_SECRET`, and issue/copy a **Channel access token** (long-lived)
+   into `LINE_CHANNEL_ACCESS_TOKEN` in `.env`.
+3. Set **Webhook URL** to `https://<your-public-url>/webhook/line/<shop_id>`
+   and turn **Use webhook** on. The console's "Verify" button sends a test
+   request with no events — the app returns 200 for that, so Verify should
+   succeed once the URL is reachable.
+4. In the LINE Official Account Manager (the separate dashboard for the
+   account itself, not the Developers Console) → **Settings → Response
+   settings**, turn **off** "Auto-response messages" and "Greeting
+   messages" so LINE's built-in canned replies don't fire alongside — or
+   instead of — this app's reply. Leave "Webhooks" **on**.
+5. Add the account as a friend to test: scan its QR code (shown on the
+   Messaging API tab) or search its LINE ID from the app.
 
 ### Booking ledger
 
@@ -52,7 +66,7 @@ cp .env.example .env
      (Editor access).
   3. Put the sheet ID (from its URL) in the shop's config as
      `google_sheet_id`. The sheet needs a tab matching `sheet_tab`
-     (default `Bookings`) with 4 columns: date, from, message, status.
+     (default `Bookings`) with 4 columns: date, from_id, message, status.
 
   Switching later doesn't touch any code — just flip `BOOKINGS_BACKEND` to
   `google_sheets` in `.env` (or in Render's Environment tab) once you have
@@ -62,14 +76,14 @@ When the `csv` backend is active, `GET /debug/bookings/{shop_id}` renders
 the file as a simple HTML table — handy when the server isn't on a machine
 you can `cat` the file on directly (e.g. a Render deploy), and it's a plain
 URL someone can open in a browser (on a phone or laptop) after sending a
-test WhatsApp message. The page auto-refreshes every 5 seconds, so leaving
-it open shows new rows land without touching anything. Add `?format=csv` to
+test LINE message. The page auto-refreshes every 5 seconds, so leaving it
+open shows new rows land without touching anything. Add `?format=csv` to
 get the raw CSV instead (e.g. to download it). The endpoint returns 404 if
 the shop is unknown or hasn't logged anything yet, and 404 if
 `BOOKINGS_BACKEND` isn't `csv` (there's no file to read for
 `google_sheets`). If `DEBUG_TOKEN` is set in `.env`, requests need the
 matching value either as a `X-Debug-Token` header or a `?token=` query
-param, or they get a 403 — the endpoint returns raw customer phone numbers
+param, or they get a 403 — the endpoint returns raw customer LINE user IDs
 and messages, so always set this before deploying anywhere public:
 
 ```bash
@@ -95,10 +109,8 @@ services, booking link, and sheet ID.
 uvicorn app.main:app --reload
 ```
 
-Expose it publicly for Twilio to reach (e.g. `ngrok http 8000`), and set
-`PUBLIC_BASE_URL` in `.env` to that public URL if the app sits behind a
-proxy/tunnel — signature validation checks against the exact URL Twilio
-posted to.
+Expose it publicly for LINE to reach (e.g. `ngrok http 8000`), and paste
+that URL into the channel's Webhook URL setting as described above.
 
 ### Tests
 
@@ -116,14 +128,15 @@ Env vars marked `sync: false` in `render.yaml` aren't stored in the repo —
 Render prompts you to fill them in when the blueprint is applied (or later
 under the service's **Environment** tab):
 
-- `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` — from the Twilio console.
+- `LINE_CHANNEL_SECRET`, `LINE_CHANNEL_ACCESS_TOKEN` — from the LINE
+  Developers Console's Messaging API tab.
 - `DEBUG_TOKEN` — any random string; required to use the `/debug/bookings`
   endpoint below once the service is public.
 
 `render.yaml` defaults `BOOKINGS_BACKEND` to `csv`, so the deploy works with
-just the two Twilio values above — no Google Cloud needed. Note that
-Render's free/starter web services have ephemeral disk: it survives while
-the instance is running but resets on redeploy, which is fine for a demo
+just the two LINE values above — no Google Cloud needed. Note that Render's
+free/starter web services have ephemeral disk: it survives while the
+instance is running but resets on redeploy, which is fine for a demo
 session but not for durable storage.
 
 When you're ready to switch to Google Sheets: change `BOOKINGS_BACKEND` to
@@ -133,14 +146,8 @@ named `service-account.json` with the key's JSON as its contents). Render
 mounts secret files at `/etc/secrets/<name>`, which is exactly what
 `GOOGLE_SERVICE_ACCOUNT_FILE` in `render.yaml` already points at.
 
-`PUBLIC_BASE_URL` in `render.yaml` assumes the service is named
-`frontdesk-mvp` (Render's default subdomain is
-`https://<service-name>.onrender.com`). If you rename the service, update
-that value to match — it's used for Twilio signature validation, so a
-mismatch makes every webhook request look invalid (403s).
-
-Once it's live, point the Twilio WhatsApp Sandbox's webhook at:
-`https://frontdesk-mvp.onrender.com/webhook/whatsapp/<shop_id>`
+Once it's live, set the LINE channel's Webhook URL to:
+`https://frontdesk-mvp.onrender.com/webhook/line/<shop_id>`
 
 Watch bookings land during a demo with `GET /debug/bookings/<shop_id>` (see
 above) — no shell access to the instance needed.
@@ -157,9 +164,10 @@ Starter plan (~$7/mo) to remove cold-start risk entirely during the call.
   pitch's sample sheet shows. A person still reads the message and
   confirms. Structured extraction (or a booking form that writes directly
   to the sheet) is a natural fast-follow.
-- One Twilio WhatsApp-enabled number generally serves one webhook
-  configuration, so in production each shop typically needs its own
-  Twilio number — the shared sandbox works for development only.
+- One LINE Official Account maps to one webhook URL, so in production each
+  shop typically needs its own Official Account — LINE's free plan allows
+  creating more than one, so this works for a handful of pilot shops
+  without extra cost.
 - Shop config is read from local JSON files and cached in memory; changing
   a config file requires restarting the server.
 - The `csv` booking backend is local disk, not shared or durable across

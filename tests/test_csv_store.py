@@ -29,7 +29,7 @@ def _shop():
 def test_append_booking_row_creates_file_with_header_and_row():
     from app.csv_store import append_booking_row
 
-    append_booking_row(_shop(), "whatsapp:+15551234567", "hey are you open tomorrow?")
+    append_booking_row(_shop(), "U15551234567", "hey are you open tomorrow?")
 
     from app.config import get_settings
 
@@ -38,16 +38,16 @@ def test_append_booking_row_creates_file_with_header_and_row():
     with open(csv_path, newline="", encoding="utf-8") as f:
         rows = list(csv.reader(f))
 
-    assert rows[0] == ["timestamp", "from", "message", "status"]
-    assert rows[1][1:] == ["whatsapp:+15551234567", "hey are you open tomorrow?", "New"]
+    assert rows[0] == ["timestamp", "from_id", "message", "status"]
+    assert rows[1][1:] == ["U15551234567", "hey are you open tomorrow?", "New"]
 
 
 def test_append_booking_row_appends_without_duplicating_header():
     from app.csv_store import append_booking_row
 
     shop = _shop()
-    append_booking_row(shop, "whatsapp:+15551111111", "first")
-    append_booking_row(shop, "whatsapp:+15552222222", "second")
+    append_booking_row(shop, "U15551111111", "first")
+    append_booking_row(shop, "U15552222222", "second")
 
     from app.config import get_settings
 
@@ -57,4 +57,4 @@ def test_append_booking_row_appends_without_duplicating_header():
         rows = list(csv.reader(f))
 
     assert len(rows) == 3
-    assert rows[0] == ["timestamp", "from", "message", "status"]
+    assert rows[0] == ["timestamp", "from_id", "message", "status"]
