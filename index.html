@@ -1,7 +1,12 @@
-<title>Frontdesk</title>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frontdesk｜店舗向けLINE予約自動化</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@700;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Noto+Serif+JP:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;600&display=swap">
 <style>
   :root{
     --paper:#EDEBE2;
@@ -60,13 +65,13 @@
     background-color:var(--paper);
     background-image:repeating-linear-gradient(to bottom, var(--rule-faint) 0 1px, transparent 1px 30px);
     color:var(--ink);
-    font-family:"Source Serif 4", Georgia, "Iowan Old Style", serif;
+    font-family:"Source Serif 4", "Noto Serif JP", Georgia, "Iowan Old Style", serif;
     font-size:17px;
-    line-height:1.6;
+    line-height:1.8;
   }
 
   h1,h2,h3{
-    font-family:"Big Shoulders Display", "Arial Narrow", sans-serif;
+    font-family:"Big Shoulders Display", "Zen Kaku Gothic New", "Arial Narrow", sans-serif;
     font-weight:800;
     text-transform:uppercase;
     letter-spacing:.01em;
@@ -75,11 +80,11 @@
     color:var(--ink);
   }
 
-  .mono{ font-family:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace; }
+  .mono{ font-family:"IBM Plex Mono", "Noto Sans JP", ui-monospace, "SF Mono", Menlo, monospace; }
   .label{
-    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-family:"IBM Plex Mono", "Noto Sans JP", ui-monospace, monospace;
     font-size:.72rem;
-    letter-spacing:.14em;
+    letter-spacing:.1em;
     text-transform:uppercase;
     color:var(--ink-soft);
   }
@@ -107,8 +112,8 @@
   }
   .brand span{ color:var(--rust); }
   .nav-cta{
-    font-family:"IBM Plex Mono", monospace;
-    font-size:.75rem; letter-spacing:.08em; text-transform:uppercase;
+    font-family:"IBM Plex Mono", "Noto Sans JP", monospace;
+    font-size:.75rem; letter-spacing:.04em; text-transform:uppercase;
     color:var(--ink); text-decoration:none;
     border:1px solid var(--ink); padding:8px 14px;
     white-space:nowrap;
@@ -124,17 +129,17 @@
     border:2px dashed var(--hero-line);
     display:flex; align-items:center; justify-content:center; text-align:center;
     transform:rotate(-8deg);
-    font-family:"IBM Plex Mono", monospace;
-    font-size:.62rem; letter-spacing:.1em; text-transform:uppercase;
-    color:var(--hero-ink); opacity:.85; line-height:1.3;
+    font-family:"IBM Plex Mono", "Noto Sans JP", monospace;
+    font-size:.72rem; letter-spacing:.04em;
+    color:var(--hero-ink); opacity:.85; line-height:1.5;
   }
-  .hero h1{ color:var(--hero-ink); font-size:clamp(2.3rem, 6.4vw, 3.6rem); line-height:.98; max-width:20ch; }
+  .hero h1{ color:var(--hero-ink); font-size:clamp(2rem, 6.4vw, 3.2rem); line-height:1.3; max-width:13em; }
   .hero p.sub{
-    max-width:54ch; font-size:1.08rem; color:var(--hero-ink); opacity:.92;
+    max-width:32em; font-size:1.05rem; color:var(--hero-ink); opacity:.92;
   }
   .hero-actions{ display:flex; gap:14px; flex-wrap:wrap; margin-top:4px; }
   .btn{
-    font-family:"IBM Plex Mono", monospace; font-size:.8rem; letter-spacing:.06em; text-transform:uppercase;
+    font-family:"IBM Plex Mono", "Noto Sans JP", monospace; font-size:.8rem; letter-spacing:.04em; text-transform:uppercase;
     padding:12px 20px; text-decoration:none; display:inline-block; border:1px solid transparent;
   }
   .btn-primary{ background:var(--rust); color:#241008; }
@@ -155,14 +160,14 @@
   section{ padding:52px 0; }
   section + section{ border-top:1px solid var(--line); }
   .eyebrow{ margin-bottom:10px; }
-  h2{ font-size:clamp(1.5rem, 3.6vw, 2rem); max-width:26ch; margin-bottom:14px; }
-  .lede{ max-width:68ch; color:var(--ink-soft); font-size:1.02rem; }
-  p.body-text{ max-width:68ch; color:var(--ink-soft); font-size:1.02rem; margin:16px 0 0; }
+  h2{ font-size:clamp(1.4rem, 3.6vw, 1.9rem); max-width:20em; margin-bottom:14px; line-height:1.5; }
+  .lede{ max-width:34em; color:var(--ink-soft); font-size:1.02rem; }
+  p.body-text{ max-width:34em; color:var(--ink-soft); font-size:1.02rem; margin:16px 0 0; }
 
   /* who it's for */
   .tags{ display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; }
   .tag{
-    font-family:"IBM Plex Mono", monospace; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
+    font-family:"IBM Plex Mono", "Noto Sans JP", monospace; font-size:.78rem; letter-spacing:.04em;
     border:1px solid var(--line); padding:7px 12px; color:var(--ink-soft);
   }
 
@@ -175,11 +180,11 @@
   .ticket .label{ margin-bottom:12px; }
   .ticket-row{
     display:flex; justify-content:space-between; gap:12px;
-    font-family:"IBM Plex Mono", monospace; font-size:.88rem;
+    font-family:"IBM Plex Mono", "Noto Sans JP", monospace; font-size:.88rem;
     padding:7px 0; border-bottom:1px dashed var(--line);
   }
   .ticket-row.total{ border-bottom:none; border-top:1px solid var(--ink); margin-top:4px; padding-top:12px; font-weight:600; font-size:1rem; }
-  .ticket-note{ margin-top:14px; font-size:.82rem; color:var(--ink-soft); font-family:"IBM Plex Mono", monospace; }
+  .ticket-note{ margin-top:14px; font-size:.82rem; color:var(--ink-soft); font-family:"IBM Plex Mono", "Noto Sans JP", monospace; }
 
   /* steps / docket */
   .docket{ margin-top:30px; display:flex; flex-direction:column; }
@@ -193,12 +198,12 @@
     color:var(--forest); line-height:1;
   }
   .entry-icon{ width:26px; height:26px; margin-bottom:10px; color:var(--forest); }
-  .entry h3{ font-size:1.05rem; letter-spacing:0; margin-bottom:6px; }
+  .entry h3{ font-size:1.05rem; letter-spacing:0; margin-bottom:6px; text-transform:none; }
   .entry .stamp-time{
-    font-family:"IBM Plex Mono", monospace; font-size:.72rem; color:var(--ink-soft);
-    letter-spacing:.06em; margin-bottom:8px; display:block;
+    font-family:"IBM Plex Mono", "Noto Sans JP", monospace; font-size:.72rem; color:var(--ink-soft);
+    letter-spacing:.04em; margin-bottom:8px; display:block;
   }
-  .entry p{ margin:0; color:var(--ink-soft); max-width:60ch; }
+  .entry p{ margin:0; color:var(--ink-soft); max-width:30em; }
 
   /* proof clippings */
   .clippings{ display:flex; flex-wrap:wrap; gap:28px; margin-top:28px; }
@@ -211,70 +216,72 @@
   .clip.sheet{ transform:rotate(1deg); }
   .clip .label{ margin-bottom:10px; }
   .bubble{
-    font-family:"Source Serif 4", serif; font-size:.92rem; padding:9px 12px; margin-bottom:8px;
+    font-family:"Source Serif 4", "Noto Serif JP", serif; font-size:.92rem; padding:9px 12px; margin-bottom:8px;
     border-radius:2px; max-width:92%;
   }
   .bubble.in{ background:var(--forest-soft); color:var(--ink); }
   .bubble.out{ background:transparent; border:1px solid var(--line); color:var(--ink-soft); margin-left:auto; }
-  .bubble-meta{ font-family:"IBM Plex Mono", monospace; font-size:.62rem; color:var(--ink-soft); margin:2px 0 4px; }
+  .bubble-meta{ font-family:"IBM Plex Mono", "Noto Sans JP", monospace; font-size:.66rem; color:var(--ink-soft); margin:2px 0 4px; }
 
-  table.sheet{ width:100%; border-collapse:collapse; font-family:"IBM Plex Mono", monospace; font-size:.72rem; }
+  table.sheet{ width:100%; border-collapse:collapse; font-family:"IBM Plex Mono", "Noto Sans JP", monospace; font-size:.76rem; }
   table.sheet th{ text-align:left; color:var(--ink-soft); font-weight:500; padding-bottom:6px; border-bottom:1px solid var(--line); }
   table.sheet td{ padding:7px 0; border-bottom:1px solid var(--rule-faint); vertical-align:top; }
   .chip-new{
-    background:var(--rust); color:#241008; font-size:.6rem; letter-spacing:.06em;
+    background:var(--rust); color:#241008; font-size:.64rem; letter-spacing:.04em;
     padding:2px 6px; text-transform:uppercase; font-weight:600;
   }
 
   footer{ padding:56px 0 64px; }
-  footer h2{ max-width:22ch; }
+  footer h2{ max-width:16em; }
   .faq{ margin-top:28px; display:flex; flex-direction:column; }
   .faq-item{ padding:20px 0; border-top:1px solid var(--line); }
   .faq-item:first-child{ border-top:1px solid var(--line); }
   .faq-item .q{
     display:flex; gap:10px; align-items:baseline;
-    font-family:"Big Shoulders Display", sans-serif; font-weight:700; text-transform:none;
+    font-family:"Zen Kaku Gothic New", "Big Shoulders Display", sans-serif; font-weight:700; text-transform:none;
     font-size:1.05rem; color:var(--ink); margin-bottom:8px;
   }
   .faq-item .q .mark{ color:var(--forest); font-family:"IBM Plex Mono", monospace; font-weight:600; font-size:.95rem; }
   .faq-item .a{ display:flex; gap:10px; align-items:flex-start; }
   .faq-item .a .mark{ color:var(--ink-soft); font-family:"IBM Plex Mono", monospace; font-weight:600; font-size:.85rem; margin-top:.2em; }
-  .faq-item .a p{ margin:0; color:var(--ink-soft); max-width:60ch; }
+  .faq-item .a p{ margin:0; color:var(--ink-soft); max-width:30em; }
 
   .compare{ margin-top:28px; display:flex; flex-direction:column; }
   .compare-item{ padding:20px 0; border-top:1px solid var(--line); }
   .compare-item:first-child{ border-top:1px solid var(--line); }
-  .compare-item h3{ font-size:1.05rem; margin-bottom:6px; }
+  .compare-item h3{ font-size:1.05rem; margin-bottom:6px; text-transform:none; }
   .compare-item h3 .vs{ color:var(--rust); font-family:"IBM Plex Mono", monospace; font-size:.7rem; font-weight:600; letter-spacing:.06em; vertical-align:middle; margin-right:8px; border:1px solid var(--rust); padding:2px 6px; }
-  .compare-item p{ margin:0; color:var(--ink-soft); max-width:60ch; }
+  .compare-item p{ margin:0; color:var(--ink-soft); max-width:30em; }
   .closing-actions{ display:flex; gap:14px; flex-wrap:wrap; margin-top:22px; }
   .btn-dark{ background:var(--ink); color:var(--paper); border:1px solid var(--ink); }
   .btn-dark:hover{ background:transparent; color:var(--ink); }
   .btn-outline{ border:1px solid var(--ink); color:var(--ink); }
   .btn-outline:hover{ background:var(--ink); color:var(--paper); }
-  .fineprint{ margin-top:40px; font-family:"IBM Plex Mono", monospace; font-size:.7rem; color:var(--ink-soft); letter-spacing:.03em; }
+  .fineprint{ margin-top:40px; font-family:"IBM Plex Mono", "Noto Sans JP", monospace; font-size:.7rem; color:var(--ink-soft); letter-spacing:.02em; }
 
   @media (max-width: 560px){
     .entry{ grid-template-columns:40px 1fr; }
     .clip{ width:100%; }
   }
 </style>
+</head>
+<body>
 
 <div class="topbar">
   <div class="wrap">
     <div class="brand">Front<span>desk</span></div>
-    <a class="nav-cta" href="#pilot">See pilot terms</a>
+    <a class="nav-cta" href="#pilot">トライアル詳細を見る</a>
   </div>
 </div>
 
 <div class="hero">
   <div class="wrap">
-    <div class="stamp">OPEN<br>WHILE<br>YOU'RE<br>NOT</div>
-    <h1>Every unanswered LINE message is a booking someone else got.</h1>
-    <p class="sub">Frontdesk answers the message the second it lands — hours, pricing, a booking link — then drops a clean row in your sheet so the only thing left for you to do is show up and do the work.</p>
+    <div class="stamp">不在<br>でも<br>営業<br>中</div>
+    <h1>返信できなかった1通が、他店の予約になる。</h1>
+    <p class="sub">Frontdeskはメッセージが届いた瞬間に返信します——営業時間、料金、予約リンクを添えて。あとはシートに追加された1行を確認するだけ。あなたは本業に集中できます。</p>
     <div class="hero-actions">
-      <a class="btn btn-primary" href="#pilot">Start the two-week pilot</a>
-      <a class="btn btn-ghost" href="#how">See how it works</a>
+      <a class="btn btn-primary" href="#pilot">2週間の無料トライアルを始める</a>
+      <a class="btn btn-ghost" href="#how">仕組みを見る</a>
     </div>
   </div>
 </div>
@@ -283,45 +290,45 @@
 <main class="wrap">
 
   <section id="who">
-    <div class="label eyebrow">Built for shops that run on walk-ins and appointments</div>
-    <h2>If a missed text costs you a booking, this is for you.</h2>
-    <p class="lede">Frontdesk fits any business where the phone doubles as the front desk — no receptionist, no answering service, just you and a message thread that never stops.</p>
-    <p class="body-text">A question about tomorrow's availability, or this week's price, doesn't wait for you to unlock the front door. By the time you read it the next morning, it's already been answered — just not by you, and not in your favor.</p>
+    <div class="label eyebrow">予約・来店型の店舗のために</div>
+    <h2>返信できなかった1通が予約を逃すなら、これはあなたのためのサービスです。</h2>
+    <p class="lede">Frontdeskは、スマートフォンが受付を兼ねているあらゆる業種に対応します。受付スタッフも電話代行も不要——あるのは、あなたと鳴りやまないメッセージだけ。</p>
+    <p class="body-text">明日の空き状況や今週の料金についての質問は、あなたが店を開けるまで待ってくれません。翌朝それを読む頃には、すでに誰かが答えを出しています——あなたではない誰かが、あなたにとって不利な形で。</p>
     <div class="tags">
-      <span class="tag">Salons &amp; barbers</span>
-      <span class="tag">Clinics &amp; therapists</span>
-      <span class="tag">Repair shops</span>
-      <span class="tag">Restaurants</span>
-      <span class="tag">Tutors &amp; studios</span>
+      <span class="tag">美容室・理容室</span>
+      <span class="tag">クリニック・整体院</span>
+      <span class="tag">修理店</span>
+      <span class="tag">飲食店</span>
+      <span class="tag">塾・スタジオ</span>
     </div>
   </section>
 
   <section id="why-now">
-    <div class="label eyebrow">Behind the numbers</div>
-    <h2>Why texting beats calling now</h2>
-    <p class="lede">Customers reach for a message before they reach for the phone. Calling a shop mid-task feels like an imposition — texting doesn't, which means reply speed on that first message is doing more of the selling than your storefront ever did.</p>
-    <p class="body-text">It shows up hardest in appointment-based trades — salons, clinics, repair shops — where a customer is usually just checking before they commit to anything. Whoever answers that check-in first tends to get the booking. Frontdesk exists to make sure that's always you, even when nobody's within arm's reach of a phone.</p>
+    <div class="label eyebrow">データが示すこと</div>
+    <h2>今、電話よりメッセージが選ばれる理由</h2>
+    <p class="lede">お客様は電話よりも先にメッセージを送ります。作業中の店に電話をかけるのは気が引けても、メッセージなら気軽に送れる——つまり、最初の1通への返信スピードが、店構え以上に販売を左右しているのです。</p>
+    <p class="body-text">これは予約制の業種——美容室、クリニック、修理店など——で特に顕著です。お客様はたいてい、決める前に軽く確認しているだけ。その最初の問い合わせに一番早く答えた店が予約を獲得します。Frontdeskは、誰もスマホに手が届かない時でも、その「一番」が常にあなたであるためのサービスです。</p>
   </section>
 
   <section id="cost">
-    <div class="label eyebrow">The math on silence</div>
-    <h2>What a quiet phone actually costs</h2>
-    <p class="lede">This is an illustrative example, not a claim about your numbers — but the shape of it holds for most appointment-based shops.</p>
+    <div class="label eyebrow">沈黙のコスト計算</div>
+    <h2>反応のない電話が実際に生む損失</h2>
+    <p class="lede">これはあくまで一例であり、あなたの店の数字を示すものではありません——ただ、この構図はほとんどの予約制店舗に当てはまります。</p>
     <div class="ticket">
-      <div class="label">Example — one shop, one month</div>
-      <div class="ticket-row"><span>Messages received after close</span><span>32</span></div>
-      <div class="ticket-row"><span>Answered same night</span><span>0</span></div>
-      <div class="ticket-row"><span>Booked elsewhere by morning</span><span>~8</span></div>
-      <div class="ticket-row"><span>Average ticket</span><span>$40</span></div>
-      <div class="ticket-row total"><span>Left on the table</span><span>$320/mo</span></div>
-      <div class="ticket-note">// numbers vary by shop — the pattern doesn't</div>
+      <div class="label">例——ある店舗の1ヶ月</div>
+      <div class="ticket-row"><span>閉店後に届いたメッセージ</span><span>32件</span></div>
+      <div class="ticket-row"><span>その夜のうちに返信</span><span>0件</span></div>
+      <div class="ticket-row"><span>翌朝までに他店で予約</span><span>約8件</span></div>
+      <div class="ticket-row"><span>平均客単価</span><span>¥4,000</span></div>
+      <div class="ticket-row total"><span>逃した売上</span><span>¥32,000/月</span></div>
+      <div class="ticket-note">// 数字は店舗により異なりますが、傾向は変わりません</div>
     </div>
-    <p class="body-text">None of this shows up on a P&amp;L. There's no "missed booking" line item, which is exactly why it's easy to leave unfixed for years at a time. The math starts the same way for every shop: count how many messages land after you've locked the front door for the night.</p>
+    <p class="body-text">これらは損益計算書には表れません。「逃した予約」という勘定科目は存在しないため、何年も放置されがちです。計算はどの店でも同じところから始まります——閉店後に何件のメッセージが届いているか、数えてみることです。</p>
   </section>
 
   <section id="how">
-    <div class="label eyebrow">How it runs</div>
-    <h2>Three steps, no one at the desk</h2>
+    <div class="label eyebrow">仕組み</div>
+    <h2>誰もいなくても、3ステップで完結</h2>
     <div class="docket">
 
       <div class="entry">
@@ -330,9 +337,9 @@
           <svg class="entry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v11H9l-4 4V5Z"/></svg>
         </div>
         <div>
-          <span class="stamp-time">9:47 PM · CUSTOMER</span>
-          <h3>The message arrives</h3>
-          <p>A customer messages your LINE account asking about hours, a service, or a same-day slot — whether you're open, closed, or asleep.</p>
+          <span class="stamp-time">21:47・お客様</span>
+          <h3>メッセージが届く</h3>
+          <p>営業時間やメニュー、当日の空き状況について、お客様があなたのLINEアカウントにメッセージを送ります——営業中でも、閉店後でも、あなたが眠っていても。</p>
         </div>
       </div>
 
@@ -342,9 +349,9 @@
           <svg class="entry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="7.5"/><path d="M12 8v4l2.6 2.6"/></svg>
         </div>
         <div>
-          <span class="stamp-time">9:47 PM · FRONTDESK (AUTO)</span>
-          <h3>The desk answers</h3>
-          <p>An instant reply covers hours, pricing, and location, and hands over a booking link for anything more specific. Nobody has to be watching a phone at 10 PM.</p>
+          <span class="stamp-time">21:47・Frontdesk(自動応答)</span>
+          <h3>自動応答が返信する</h3>
+          <p>営業時間・料金・アクセスを即座に返信し、それ以上の詳細は予約リンクへ案内します。夜10時にスマホを見張っている必要はありません。</p>
         </div>
       </div>
 
@@ -354,9 +361,9 @@
           <svg class="entry-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M4 10h16M10 10v10"/></svg>
         </div>
         <div>
-          <span class="stamp-time">9:52 PM · YOUR SHEET</span>
-          <h3>The ledger updates</h3>
-          <p>Once the booking form is filled in, the request lands as a row in your Google Sheet — name, service, requested time, status — ready to confirm in the morning.</p>
+          <span class="stamp-time">21:52・あなたのシート</span>
+          <h3>台帳が更新される</h3>
+          <p>予約フォームの入力が完了すると、依頼はGoogleスプレッドシートに1行として追加されます——氏名、メニュー、希望時間、ステータス付きで。あとは翌朝確認するだけです。</p>
         </div>
       </div>
 
@@ -364,94 +371,96 @@
   </section>
 
   <section id="diff">
-    <div class="label eyebrow">Compared to the alternatives</div>
-    <h2>What an answering service or a chatbot won't do</h2>
-    <p class="lede">Handing this off isn't a new idea. Here's where the usual options tend to fall short.</p>
+    <div class="label eyebrow">他の選択肢との比較</div>
+    <h2>電話代行やチャットボットにはできないこと</h2>
+    <p class="lede">対応を任せるという発想自体は新しくありません。よくある選択肢が物足りない点をご紹介します。</p>
     <div class="compare">
       <div class="compare-item">
-        <h3><span class="vs">VS</span>Answering services</h3>
-        <p>A human on the line is reassuring, but you're paying close to a wage for coverage that still stops at the end of a shift. Frontdesk answers at 2 AM the same way it answers at 2 PM, for one flat monthly rate.</p>
+        <h3><span class="vs">VS</span>電話代行サービス</h3>
+        <p>人が対応してくれる安心感はありますが、シフトが終われば対応も終わり、それでいて人件費に近いコストがかかります。Frontdeskなら深夜2時も昼の2時も同じように対応し、料金は月額定額のみです。</p>
       </div>
       <div class="compare-item">
-        <h3><span class="vs">VS</span>Generic chatbot widgets</h3>
-        <p>Most chat tools hand you a blank canvas and call the integration done — you're still the one writing every script. Frontdesk starts working the moment you hand over your hours, prices, and a booking link, and every completed request lands as a row in your sheet.</p>
+        <h3><span class="vs">VS</span>汎用チャットボット</h3>
+        <p>多くのチャットツールは、まっさらな画面を渡して「導入完了」と言うだけ——台本を書くのは結局あなた自身です。Frontdeskなら営業時間・料金・予約リンクを渡した瞬間から稼働を始め、完了した依頼はすべてシートの1行として記録されます。</p>
       </div>
       <div class="compare-item">
-        <h3><span class="vs">VS</span>Leaving it as is</h3>
-        <p>One missed text looks small on its own. A month of them adds up to the number above — and a customer who books somewhere else rarely circles back to check if you had an opening after all.</p>
+        <h3><span class="vs">VS</span>何もしない</h3>
+        <p>見逃した1通は、それ単体では小さく見えます。しかし1ヶ月分積み重なると、先ほどの金額になります——そして一度他店で予約したお客様が、後から「本当は空きがあったか」と確認しに戻ってくることはほとんどありません。</p>
       </div>
     </div>
   </section>
 
   <section id="proof">
-    <div class="label eyebrow">What actually shows up</div>
-    <h2>Same exchange, both sides</h2>
+    <div class="label eyebrow">実際に届く内容</div>
+    <h2>同じやり取りを、両側から</h2>
     <div class="clippings">
       <div class="clip chat">
-        <div class="label">Sample exchange</div>
-        <div class="bubble-meta">Customer · 9:47 PM</div>
-        <div class="bubble in">"hey are you open for a walk-in trim tomorrow morning?"</div>
-        <div class="bubble-meta" style="text-align:right;">Frontdesk (auto) · 9:47 PM</div>
-        <div class="bubble out">"We're open Tue–Sat, 9–6. Grab a same-day slot here → [booking link]. A person picks this thread up after 9am."</div>
+        <div class="label">やり取りの例</div>
+        <div class="bubble-meta">お客様・21:47</div>
+        <div class="bubble in">「明日の朝、予約なしでカットって入れますか?」</div>
+        <div class="bubble-meta" style="text-align:right;">Frontdesk(自動)・21:47</div>
+        <div class="bubble out">「営業は火〜土の9:00〜18:00です。当日の空き状況はこちらから→[予約リンク]。朝9時以降はスタッフが直接対応します。」</div>
       </div>
       <div class="clip sheet">
-        <div class="label">Same request, in your sheet</div>
+        <div class="label">同じ依頼が、あなたのシートに</div>
         <table class="sheet">
-          <tr><th>Date</th><th>Name</th><th>Service</th><th>Time</th><th>Status</th></tr>
-          <tr><td>Wed</td><td>J. Alvarez</td><td>Trim</td><td>9:30a</td><td><span class="chip-new">New</span></td></tr>
-          <tr><td>Tue</td><td>R. Osei</td><td>Color</td><td>1:00p</td><td>Confirmed</td></tr>
-          <tr><td>Tue</td><td>M. Chen</td><td>Trim</td><td>11:15a</td><td>Done</td></tr>
+          <tr><th>日付</th><th>氏名</th><th>メニュー</th><th>時間</th><th>ステータス</th></tr>
+          <tr><td>水</td><td>佐藤 花子</td><td>カット</td><td>9:30</td><td><span class="chip-new">新規</span></td></tr>
+          <tr><td>火</td><td>高橋 陸</td><td>カラー</td><td>13:00</td><td>確定</td></tr>
+          <tr><td>火</td><td>田中 美咲</td><td>カット</td><td>11:15</td><td>完了</td></tr>
         </table>
       </div>
     </div>
   </section>
 
   <section id="faq">
-    <div class="label eyebrow">Before you sign up</div>
-    <h2>What shop owners ask first</h2>
+    <div class="label eyebrow">ご契約前によくある質問</div>
+    <h2>店舗オーナーからよくある質問</h2>
     <div class="faq">
       <div class="faq-item">
-        <div class="q"><span class="mark">Q</span>Can I keep the LINE account I already give out?</div>
-        <div class="a"><span class="mark">A</span><p>Yes — Frontdesk connects to the LINE account you're already using. Customers won't notice a switch; they'll just notice faster replies.</p></div>
+        <div class="q"><span class="mark">Q</span>すでに使っているLINEアカウントのままで大丈夫ですか?</div>
+        <div class="a"><span class="mark">A</span><p>はい——Frontdeskは今お使いのLINEアカウントにそのまま接続します。お客様が切り替わりに気づくことはなく、返信が速くなったと感じるだけです。</p></div>
       </div>
       <div class="faq-item">
-        <div class="q"><span class="mark">Q</span>What happens to customer information?</div>
-        <div class="a"><span class="mark">A</span><p>Names, requests, and contact details go straight into the Google Sheet you control. Nothing is sold, shared, or used for anything beyond running your bookings.</p></div>
+        <div class="q"><span class="mark">Q</span>お客様の情報はどう扱われますか?</div>
+        <div class="a"><span class="mark">A</span><p>氏名、依頼内容、連絡先は、あなたが管理するGoogleスプレッドシートに直接記録されます。販売・共有されることはなく、予約管理以外の目的で使用されることもありません。</p></div>
       </div>
       <div class="faq-item">
-        <div class="q"><span class="mark">Q</span>What if I want to cancel?</div>
-        <div class="a"><span class="mark">A</span><p>Cancel anytime — no contract, no early-termination fee, no exit interview.</p></div>
+        <div class="q"><span class="mark">Q</span>解約したくなったら?</div>
+        <div class="a"><span class="mark">A</span><p>いつでも解約できます——契約期間の縛りも、解約金も、面倒な手続きもありません。</p></div>
       </div>
       <div class="faq-item">
-        <div class="q"><span class="mark">Q</span>Does it handle phone calls or other languages?</div>
-        <div class="a"><span class="mark">A</span><p>Not yet — Frontdesk currently covers LINE text in English. Voice support and additional languages are on the roadmap; ask us about your specific need.</p></div>
+        <div class="q"><span class="mark">Q</span>電話対応や他言語には対応していますか?</div>
+        <div class="a"><span class="mark">A</span><p>現在はLINEでの日本語テキスト対応のみです。音声対応や多言語対応は今後の展開予定です。具体的なご要望があればぜひお問い合わせください。</p></div>
       </div>
     </div>
   </section>
 
   <section id="pilot">
-    <div class="label eyebrow">Getting started</div>
-    <h2>The two-week pilot</h2>
-    <p class="lede">One location, your real LINE account, no long-term commitment before you've seen a single week of it working.</p>
+    <div class="label eyebrow">導入までの流れ</div>
+    <h2>2週間の無料トライアル</h2>
+    <p class="lede">1店舗、実際のLINEアカウントで——効果を実感するまで、長期契約は必要ありません。</p>
     <div class="ticket">
-      <div class="label">Pilot docket</div>
-      <div class="ticket-row"><span>LINE autoresponder setup</span><span>included</span></div>
-      <div class="ticket-row"><span>FAQ + booking-link configuration</span><span>included</span></div>
-      <div class="ticket-row"><span>Google Sheet ledger template</span><span>included</span></div>
-      <div class="ticket-row"><span>Two-week trial run, one location</span><span>no charge</span></div>
-      <div class="ticket-row total"><span>After the pilot</span><span>from $79/mo</span></div>
-      <div class="ticket-note">// cancel anytime — no contract, no setup fee</div>
+      <div class="label">トライアル内容</div>
+      <div class="ticket-row"><span>LINE自動応答の設定</span><span>込み</span></div>
+      <div class="ticket-row"><span>よくある質問+予約リンクの設定</span><span>込み</span></div>
+      <div class="ticket-row"><span>Googleスプレッドシート台帳テンプレート</span><span>込み</span></div>
+      <div class="ticket-row"><span>2週間のトライアル運用(1店舗)</span><span>無料</span></div>
+      <div class="ticket-row total"><span>トライアル終了後</span><span>月額¥9,800〜</span></div>
+      <div class="ticket-note">// いつでも解約可能——契約期間の縛りも初期費用もありません</div>
     </div>
   </section>
 
   <footer>
-    <h2>Let the desk take the night shift.</h2>
-    <p class="lede">Fifteen minutes to connect your LINE account. Nothing changes for your customers except how fast they hear back.</p>
+    <h2>夜間の対応は、Frontdeskに任せてください。</h2>
+    <p class="lede">LINEアカウントの接続は15分で完了します。お客様側で変わるのは、返信の速さだけです。</p>
     <div class="closing-actions">
       <a class="btn btn-dark" href="mailto:hello@frontdesk.example">hello@frontdesk.example</a>
-      <a class="btn btn-outline" href="#how">Walk through it again</a>
+      <a class="btn btn-outline" href="#how">もう一度確認する</a>
     </div>
-    <div class="fineprint">FRONTDESK — LINE BOOKING AUTOMATION FOR LOCAL SHOPS</div>
+    <div class="fineprint">FRONTDESK — 店舗向けLINE予約自動化サービス</div>
   </footer>
 
 </main>
+</body>
+</html>
